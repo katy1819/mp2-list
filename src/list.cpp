@@ -150,16 +150,25 @@ void List::InsertAfter(Node* node, const DataType& d) // вставить элемент d посл
 
 void List::Delete(const DataType& d) // удалить звено со значением data = d
 {
-	Node* prev, *temp;
-	temp= head;
-	prev = NULL;
-	while((temp->next != NULL) && (temp->data != d))
+	Node* temp1 = head;
+	Node* temp2 = head;
+	if(temp1 != NULL)
 	{
-		prev = temp;
-		temp = temp->next;
+	while((temp1->next != NULL) && (temp1->data != d))
+	{
+		temp2 = temp1;
+		temp1 = temp1->next;
 	}
-	prev->next = temp->next;
-	delete temp;
+	if(temp1->data == d)
+	{
+	temp2->next = temp1->next;
+	if(temp1 == head)
+	{
+		head = head->next;
+	}
+	delete temp1;
+	}
+	}
 }
 
  Node* List::Search(const DataType& d) // найти указатель на звено со значением data = d
