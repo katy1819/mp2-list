@@ -44,12 +44,12 @@ List::List(const List& list2)
 	}
 	else
 	{
-		head = new Node(list2.head->data, list2.head);
+		head = new Node(list2.head->data, NULL);
 		Node* head1 = head;
 		Node* head2 = list2.head->next;
 		while(head2 != NULL)
 		{
-			head1->next = new Node(head2->data, head2->next);
+			head1->next = new Node(head2->data, NULL);
 			head1 = head1->next;
 			head2 = head2->next;
 		}
@@ -133,7 +133,7 @@ void List::InserToTail(const DataType& d) // вставить элемент d последним
 		{
 			head1 = head1->next;
 		}
-		head->next = new Node(d, NULL);
+		head1->next = new Node(d, NULL);
 	}
 }
 
@@ -225,20 +225,25 @@ void List::Inverse() // инвертировать список, т.е. звенья должны идти в обратном
 		Node* head1 = head;
 		Node* head2 = NULL;
 		Node* head3 = head->next;
-		while(head != NULL)
+		while(head3 != NULL)
 		{
-			head3 = head1->next;
 			head1->next = head2;
 			head2 = head1;
 			head1 = head3;
+			head3 = head3->next;
 		}
-		head = head2;
+		head1->next = head2;
+		head = head1;
 	}
 }
 
 List List::Merge(Node* node, const List& list2) // создать список3, добавив список2 в текущий список после указателя node  
 {
 	List K;
+
+	if (node == NULL)
+		return *this;
+
 	if((head == NULL) || (head == node))
 	{
 		Node* head1 = list2.head;
@@ -294,16 +299,32 @@ List List::Merge(const List& list2) // создать список3, добавив в конец текущего
 {
 	List K;
 	Node* head1 = head;
+	Node* head2 = K.head;
+
+	if (head1)
+	{
+		K.InserToHead(head1->data);
+		head1 = head1->next;
+		head2 = K.head;
+	}
 	while(head1 != NULL)
 	{
-		K.InserToTail(head1->data);
+		K.InsertAfter(head2, head1->data);
 		head1 = head1->next;
+		head2 = head2->next;
 	}
 	head1 = list2.head;
+	if ((head == NULL) && (head1 != NULL))
+	{
+		K.InserToHead(head1->data);
+		head1 = head1->next;
+		head2 = K.head;
+	}
 	while(head1 != NULL)
 	{
-		K.InserToTail(head1->data);
+		K.InsertAfter(head2, head1->data);
 		head1 = head1->next;
+		head2 = head2->next;
 	}
 	return K;
 }
@@ -318,3 +339,5 @@ ostream& operator<<(ostream& os, const List& l)
 	}
 	return os;
 }
+
+
